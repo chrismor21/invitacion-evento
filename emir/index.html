@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Formulario para enviar mensaje por WhatsApp</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #fff6f8;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 320px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    select {
+      display: block;
+      margin-bottom: 15px;
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #25d366;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      display: none;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #128c7e;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Confirmar Asistencia</h2>
+    <form id="formulario">
+      <label for="nombre">Nombre y apellido:</label>
+      <input type="text" id="nombre" name="nombre">
+      
+      <label for="asistencia">¿Asistirás al evento?</label>
+      <select id="asistencia" name="asistencia">
+        <option value="" selected>Seleccione</option>
+        <option value="si">Sí, yo quiero asistir.</option>
+        <option value="no">No, no puedo.</option>
+        <option value="no estoy seguro">No, no estoy seguro.</option>
+      </select>
+
+      <label for="num-asistentes">¿Cuántas personas asistirán? (Incluyéndote)</label>
+      <select id="num-asistentes" name="num-asistentes" disabled>
+        <option value="" selected>Seleccione</option>
+        <script>
+          for (let i = 1; i <= 10; i++) {
+            document.write(`<option value="${i}">${i}</option>`);
+          }
+        </script>
+      </select>
+
+      <button id="boton-whatsapp" type="submit">Enviar mensaje a WhatsApp</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("formulario").addEventListener("input", function() {
+      var nombre = document.getElementById("nombre").value.trim();
+      var asistencia = document.getElementById("asistencia").value;
+      var numAsistentes = document.getElementById("num-asistentes");
+      var boton = document.getElementById("boton-whatsapp");
+
+      if (asistencia === "si") {
+        numAsistentes.disabled = false;
+      } else {
+        numAsistentes.disabled = true;
+        numAsistentes.value = ""; 
+      }
+
+      if (nombre && asistencia && (asistencia !== "si" || numAsistentes.value)) {
+        boton.style.display = "block";
+      } else {
+        boton.style.display = "none";
+      }
+    });
+
+    document.getElementById("formulario").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      var nombre = document.getElementById("nombre").value.trim();
+      var asistencia = document.getElementById("asistencia").value;
+      var numAsistentes = document.getElementById("num-asistentes").value;
+
+      if (!nombre || asistencia === "" || (asistencia === "si" && !numAsistentes)) {
+        alert("Por favor, complete todos los campos.");
+        return;
+      }
+
+      var mensaje = `Hola, mi nombre es ${nombre}`;
+
+      if (asistencia === "si") {
+        mensaje += ` y asistiré al evento con ${numAsistentes} persona(s). ¡Nos vemos allí!`;
+      } else if (asistencia === "no") {
+        mensaje += " y no podré asistir al evento. ¡Espero verlos la próxima vez!";
+      } else if (asistencia === "no estoy seguro") {
+        mensaje += " y todavía no estoy seguro si podré asistir o no. ¡Hablemos pronto!";
+      }
+
+      var telefono = "525611761561";
+      var url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+      window.open(url, "_blank");
+    });
+  </script>
+
+</body>
+</html>
